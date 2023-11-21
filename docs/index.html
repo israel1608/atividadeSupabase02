@@ -38,7 +38,11 @@
                         <input type="text" name="telefone" id="input-telefone" class="form-label"> 
 
                         <label for="input-email" class="form-label">E-mail: </label>
-                        <input type="email" name="email" id="input-email" class="form-label">               
+                        <input type="email" name="email" id="input-email" class="form-label"> 
+                        
+                        <label for="input-obs" class="form-label">Obs: </label>
+                        <input type="text" name="obs" id="input-obs" class="form-label"> 
+                                      
                     </div>
                     <input type="button" id="btn-salvar" value="Salvar">
                     <input type="button" id="btn-cancelar" value="Cancelar">
@@ -53,6 +57,7 @@
             const apiUrl = 'https://ytoqheasbsporoniixwp.supabase.co/rest/v1/contato';
             const apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl0b3FoZWFzYnNwb3JvbmlpeHdwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDA1MTg1NTgsImV4cCI6MjAxNjA5NDU1OH0.dCKesAWJeL5NOXu8uLidKNgjImeNw6KK-YxCyvKtfJY';
             const apiAuthorization = 'Bearer ' + apiKey;
+            const datahj = new Date();
 
             let consultarContatos = (url) => {
                 $.ajax({
@@ -66,7 +71,7 @@
                         'Authorization': apiAuthorization
                     },
                     success: (contatos) => {
-                        let contatosStr = '<tr><th>Id</th><th>Nome</th><th>Telefone</th><th>E-mail</th><th></th><th></th></tr>';
+                        let contatosStr = '<tr><th>Id</th><th>Nome</th><th>Telefone</th><th>E-mail</th><th>Obs</th><th>Data</th></tr>';
                         for (contato of contatos) {
                             contatosStr +=
                                     '<tr>' +
@@ -74,7 +79,9 @@
                                     '<td>' + contato.nome + '</td>' +
                                     '<td>' + contato.telefone + '</td>' +
                                     '<td>' + contato.email + '</td>' +
-                                    '<td><i class="bi bi-pencil-fill" onclick="editarContato(' + contato.id + ',\'' + contato.nome + '\',\'' + contato.telefone + '\',\'' + contato.email + '\');"></i></td>' +
+                                    '<td>' + contato.obs + '</td>' +
+                                    '<td>' + contato.dtcontato + '</td>' +
+                                    '<td><i class="bi bi-pencil-fill" onclick="editarContato(' + contato.id + ',\'' + contato.nome + '\',\'' + contato.telefone + '\',\'' + contato.email + '\',\'' + contato.obs + '\',\'' + contato.dtcontato + '\');"></i></td>' +
                                     '<td><i class="bi bi-trash-fill" onclick="apagarContato(' + contato.id + ');"></i></td>' +
                                     '</tr>';
                         }
@@ -106,7 +113,7 @@
                 } // fim confirm
             };
 
-            let editarContato = (id, nome, telefone, email) => {
+            let editarContato = (id, nome, telefone, email, obs) => {
                 editando = true;
                 idContatoEditando = id;
                 $('#form-titulo').html('Editar Contato');
@@ -114,6 +121,7 @@
                 $('#input-nome').val(nome.toUpperCase());
                 $('#input-telefone').val(telefone);
                 $('#input-email').val(email);
+                $('#input-obs').val(obs);
             };
 
             $('#btn-novo').click(() => {
@@ -124,6 +132,8 @@
                 $('#input-nome').val('');
                 $('#input-telefone').val('');
                 $('#input-email').val('');
+                $('#input-obs').val('');
+                
             });
 
             $('#btn-cancelar').click(() => {
@@ -138,7 +148,9 @@
                 let dados = {
                     nome: $('#input-nome').val().toUpperCase(),
                     telefone: $('#input-telefone').val(),
-                    email: $('#input-email').val()
+                    email: $('#input-email').val(),
+                    obs: $('#input-obs').val(),
+                    dtcontato: datahj
                 };
 
                 let type, url;
